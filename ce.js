@@ -1,5 +1,6 @@
 //! moment.js локалан конфигураци
 //! locale : Russian [ce]
+//! locale : Chechen [ce]
 
 import moment from '../moment';
 
