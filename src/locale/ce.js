@@ -43,11 +43,13 @@ var monthsParse = [
 ];
 
 // months:
-// standalone: Nominative case (халхарниг дожар) - used for month names in lists
-// format: Locative case (меттиганиг дожар, § 103) - used for dates, answers "when?" (e.g., "in January")
+// Both 'format' and 'standalone' use the Nominative case (халхарниг дожар).
+// While Chechen grammar often uses the Locative case (январехь) for dates, 
+// the Nominative (январь) is chosen here as the primary display format for 
+// better consistency across calendar interfaces and digital displays.
 export default moment.defineLocale('ce', {
     months: {
-        format: 'январехь_февралехь_мартехь_апрелехь_майхь_июнехь_июлехь_августехь_сентябрехь_октябрехь_ноябрехь_декабрехь'.split(
+        format: 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split(
             '_'
         ),
         standalone:
