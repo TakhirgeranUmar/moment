@@ -4,11 +4,14 @@
 import moment from '../moment';
 
 /**
- * Handles relative time formatting.
- * In Chechen, nouns do not change their form after numbers in this context.
- * Example: 1 minute = 1 минот, 5 minutes = 5 минот.
+ * Handles relative time formatting using Chechen grammatical gender classes (J, D, B).
+ * In Chechen, the future suffix (equivalent to "in X minutes") varies based on the noun:
+ * - 'йаьлча' is used for class J nouns (seconds, minutes).
+ * - 'даьлча' is used for class D nouns (hours, days, weeks, years).
+ * - 'баьлча' is used for class B nouns (months).
+ * For the past tense ("X ago"), the universal suffix 'хьалха' is used for all classes.
  */
-function relativeTimeWithPlural(number, withoutSuffix, key) {
+function relativeTimeWithPlural(number, withoutSuffix, key, isFuture) {
     var format = {
         ss: 'секунд',
         mm: 'минот',
@@ -19,12 +22,25 @@ function relativeTimeWithPlural(number, withoutSuffix, key) {
         yy: 'шо',
     };
 
+    // Special case for a single minute in the future
     if (key === 'm') {
-        return 'минот';
+        return isFuture ? 'минот йаьлча' : 'минот';
     }
 
-    // Returns number and the noun (e.g., "5 де")
-    return number + ' ' + format[key];
+    var result = number + ' ' + format[key];
+
+    // Apply the correct grammatical class suffix for future time
+    if (isFuture) {
+        if (key === 'MM') {
+            result += ' баьлча'; // Class B (months)
+        } else if (key === 'hh' || key === 'dd' || key === 'ww' || key === 'yy') {
+            result += ' даьлча'; // Class D (hours, days, weeks, years)
+        } else {
+            result += ' йаьлча'; // Class J (seconds, minutes)
+        }
+    }
+
+    return result;
 }
 
 var monthsParse = [
@@ -80,7 +96,7 @@ export default moment.defineLocale('ce', {
     monthsStrictRegex: /^(январь|январан|январехь|февраль|февралан|февралехь|март|мартан|мартехь|апрель|апрелан|апрелехь|май|майан|майхь|июнь|июнан|июнехь|июль|июлан|июлехь|август|августан|августехь|сентябрь|сентябран|сентябрехь|октябрь|октябран|октябрехь|ноябрь|ноябран|ноябрехь|декабрь|декабран|декабрехь)/i,
 
     // monthsShortStrictRegex: matches only abbreviated forms (with or without dots).
-    monthsShortStrictRegex: /^(янв\.?|февр?\.?|март?\.?|апр\.?|май\.?|июн\.?|июл\.?|авг\.?|сент?\.?|окт\.?|нояб?\.?|дек\.?)/i,
+    monthsShortStrictStrictRegex: /^(янв\.?|февр?\.?|март?\.?|апр\.?|май\.?|июн\.?|июл\.?|авг\.?|сент?\.?|окт\.?|нояб?\.?|дек\.?)/i,
 
     longDateFormat: {
         LT: 'H:mm',
@@ -96,32 +112,14 @@ export default moment.defineLocale('ce', {
         lastDay: '[Селхана] LT',
         nextWeek: function (now) {
             if (now.week() !== this.week()) {
-                switch (this.day()) {
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                        return '[РогӀера] dddd, LT';
-                }
+                return '[РогӀера] dddd, LT';
             } else {
                 return 'dddd, LT';
             }
         },
         lastWeek: function (now) {
             if (now.week() !== this.week()) {
-                switch (this.day()) {
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                        return '[Хьалхара] dddd, LT';
-                }
+                return '[Хьалхара] dddd, LT';
             } else {
                 return 'dddd, LT';
             }
@@ -129,21 +127,22 @@ export default moment.defineLocale('ce', {
         sameElse: 'L',
     },
     relativeTime: {
-        future: '%s тӀаьхьа',
+        // Future suffix is handled dynamically inside the relativeTimeWithPlural function
+        future: '%s', 
         past: '%s хьалха',
-        s: 'масех секунд',
+        s: 'масех секунд йаьлча',
         ss: relativeTimeWithPlural,
-        m: relativeTimeWithPlural,
+        m: 'минот йаьлча',
         mm: relativeTimeWithPlural,
-        h: 'сахьт',
+        h: 'сахьт даьлча',
         hh: relativeTimeWithPlural,
-        d: 'де',
+        d: 'де даьлча',
         dd: relativeTimeWithPlural,
-        w: 'кӀира',
+        w: 'кӀира даьлча',
         ww: relativeTimeWithPlural,
-        M: 'бутт',
+        M: 'бутт баьлча',
         MM: relativeTimeWithPlural,
-        y: 'шо',
+        y: 'шо даьлча',
         yy: relativeTimeWithPlural,
     },
     meridiemParse: /буьйса|Ӏуьйре|де|суьйре/i,
