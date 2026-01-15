@@ -4,7 +4,10 @@ import moment from '../../moment';
 module('locale:ce');
 
 test('format', function (assert) {
-    var b = moment([2026, 0, 14, 15, 25]); // 2026 14 январь, кхаара
+    // Устанавливаем локаль перед тестом
+    moment.locale('ce');
+    
+    var b = moment([2026, 0, 14, 15, 25]); // 14 января 2026, среда (кхаара)
     var a = [
         ['dddd, YYYY [ш.] D MMMM, HH:mm', 'кхаара, 2026 ш. 14 январь, 15:25'],
         ['LL', '2026 ш. 14 январь'],
@@ -20,32 +23,32 @@ test('format', function (assert) {
 });
 
 test('calendar', function (assert) {
+    moment.locale('ce');
     var now = moment([2026, 0, 14]); 
     assert.equal(moment(now).subtract({ d: 1 }).calendar().split(' ')[0], 'Селхана', 'yesterday');
     assert.equal(moment(now).calendar().split(' ')[0], 'Тахана', 'today');
     assert.equal(moment(now).add({ d: 1 }).calendar().split(' ')[0], 'Кхана', 'tomorrow');
     
-    // Testing Last Week / Next Week prefixes
+    // Тестируем префиксы недель
     assert.equal(moment(now).subtract({ d: 7 }).calendar().split(' ')[0], 'Хьалхара', 'last week');
     assert.equal(moment(now).add({ d: 7 }).calendar().split(' ')[0], 'РогӀера', 'next week');
 });
 
 test('relative time future', function (assert) {
-    // Testing J-class (йаьлча)
+    moment.locale('ce');
+    // Проверка классов Й, Д, Б (isFuture)
     assert.equal(moment().add({ s: 10 }).fromNow(), 'масех секунд йаьлча', 'a few seconds (J-class)');
-    assert.equal(moment().add({ s: 45 }).fromNow(), 'минот йаьлча', 'in a minute (J-class)');
+    assert.equal(moment().add({ m: 1 }).fromNow(), 'минот йаьлча', 'in a minute (J-class)');
     assert.equal(moment().add({ m: 5 }).fromNow(), '5 минот йаьлча', 'in 5 minutes (J-class)');
-    
-    // Testing D-class (даьлча)
     assert.equal(moment().add({ h: 1 }).fromNow(), 'сахьт даьлча', 'in an hour (D-class)');
     assert.equal(moment().add({ d: 5 }).fromNow(), '5 де даьлча', 'in 5 days (D-class)');
     assert.equal(moment().add({ w: 1 }).fromNow(), 'кӀира даьлча', 'in a week (D-class)');
-    
-    // Testing B-class (баьлча)
     assert.equal(moment().add({ M: 1 }).fromNow(), 'бутт баьлча', 'in a month (B-class)');
 });
 
 test('relative time past', function (assert) {
+    moment.locale('ce');
+    // Проверка отсутствия "йаьлча/даьлча" в прошлом
     assert.equal(moment().subtract({ s: 10 }).fromNow(), 'масех секунд хьалха', 'a few seconds ago');
     assert.equal(moment().subtract({ m: 1 }).fromNow(), 'минот хьалха', 'a minute ago');
     assert.equal(moment().subtract({ m: 5 }).fromNow(), '5 минот хьалха', '5 minutes ago');
@@ -54,6 +57,7 @@ test('relative time past', function (assert) {
 });
 
 test('meridiem', function (assert) {
+    moment.locale('ce');
     assert.equal(moment([2026, 0, 14, 2]).format('A'), 'буьйса', 'night');
     assert.equal(moment([2026, 0, 14, 8]).format('A'), 'Ӏуьйре', 'morning');
     assert.equal(moment([2026, 0, 14, 15]).format('A'), 'де', 'afternoon');
