@@ -4,12 +4,13 @@ import moment from '../../moment';
 module('locale:ce');
 
 test('format', function (assert) {
-    var b = moment([2026, 0, 14, 15, 25]); // 2026 Jan 14, Wednesday
+    var b = moment([2026, 0, 14, 15, 25]); // 14 января 2026, среда
     var a = [
-        ['dddd, YYYY [ш.] D MMMM, HH:mm', 'кхаара, 2026 ш. 14 январехь, 15:25'],
-        ['LL', '2026 ш. 14 январехь'],
+        ['dddd, YYYY [ш.] D MMMM, HH:mm', 'кхаара, 2026 ш. 14 январь, 15:25'],
+        ['LL', '2026 ш. 14 январь'],
         ['L', '2026.14.01'],
-        ['LT', '15:25']
+        ['LT', '15:25'],
+        ['MMMM', 'январь']
     ];
     var i;
     for (i = 0; i < a.length; i++) {
