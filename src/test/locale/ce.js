@@ -20,14 +20,14 @@ test('format', function (assert) {
 });
 
 test('calendar', function (assert) {
-    var now = moment([2026, 0, 14]); // Среда
+    var now = moment([2026, 0, 14]); 
     assert.equal(moment(now).subtract({ d: 1 }).calendar().split(' ')[0], 'Селхана', 'yesterday');
     assert.equal(moment(now).calendar().split(' ')[0], 'Тахана', 'today');
     assert.equal(moment(now).add({ d: 1 }).calendar().split(' ')[0], 'Кхана', 'tomorrow');
     
     // Проверка Хьалхара / РогӀера
-    assert.equal(moment(now).subtract({ d: 7 }).calendar().split(' ')[0], '[Хьалхарчу]', 'last week');
-    assert.equal(moment(now).add({ d: 7 }).calendar().split(' ')[0], '[РогӀерчу]', 'next week');
+    assert.equal(moment(now).subtract({ d: 7 }).calendar().split(' ')[0], 'Хьалхара', 'last week');
+    assert.equal(moment(now).add({ d: 7 }).calendar().split(' ')[0], 'РогӀера', 'next week');
 });
 
 test('relative time', function (assert) {
@@ -36,7 +36,6 @@ test('relative time', function (assert) {
     assert.equal(moment.duration({ d: 1 }).humanize(), 'де', 'a day');
     assert.equal(moment.duration({ d: 5 }).humanize(), '5 де', '5 days');
     
-    // Проверка суффиксов (хьалха / тӀаьхьа)
     assert.equal(moment([2026, 0, 14]).from(moment([2026, 0, 14, 0, 5])), '5 минот хьалха', '5 minutes ago');
     assert.equal(moment([2026, 0, 14, 0, 5]).from(moment([2026, 0, 14])), '5 минот тӀаьхьа', 'in 5 minutes');
 });
