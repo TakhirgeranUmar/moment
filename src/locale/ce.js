@@ -3,11 +3,6 @@
 
 import moment from '../moment';
 
-/**
- * Handles relative time formatting using Chechen grammatical gender classes (J, D, B).
- * For the future ("in X minutes"), it adds class-specific suffixes: йаьлча, даьлча, баьлча.
- * For the past ("X ago"), it returns the base noun, and moment adds 'хьалха'.
- */
 function relativeTimeWithPlural(number, withoutSuffix, key, isFuture) {
     var format = {
         s: 'масех секунд',
@@ -26,18 +21,16 @@ function relativeTimeWithPlural(number, withoutSuffix, key, isFuture) {
         yy: 'шо',
     };
 
-    // Use only the noun for single units (s, m, h, d, w, M, y)
     var isSingle = /^(s|m|h|d|w|M|y)$/.test(key);
     var result = isSingle ? format[key] : number + ' ' + format[key];
 
-    // Suffixes are only applied for FUTURE time (e.g., "in 5 minutes")
     if (isFuture) {
         if (key === 'M' || key === 'MM') {
-            return result + ' баьлча'; // Class B (months)
+            return result + ' баьлча';
         } else if (/^(h|hh|d|dd|w|ww|y|yy)$/.test(key)) {
-            return result + ' даьлча'; // Class D (hours, days, weeks, years)
+            return result + ' даьлча';
         } else {
-            return result + ' йаьлча'; // Class J (seconds, minutes)
+            return result + ' йаьлча';
         }
     }
 
@@ -85,7 +78,7 @@ export default moment.defineLocale('ce', {
         sameElse: 'L',
     },
     relativeTime: {
-        future: '%s', 
+        future: '%s',
         past: '%s хьалха',
         s: relativeTimeWithPlural,
         ss: relativeTimeWithPlural,
@@ -122,7 +115,7 @@ export default moment.defineLocale('ce', {
         return number;
     },
     week: {
-        dow: 1, // Monday is the first day of the week.
-        doy: 4, // The week that contains Jan 4th is the first week of the year.
+        dow: 1,
+        doy: 4,
     },
 });
