@@ -1,32 +1,32 @@
-//! moment.js локалан конфигураци
+//! moment.js locale configuration
 //! locale : Chechen [ce]
 
 import moment from '../moment';
 
-function plural(word, num) {
-    var forms = word.split('_');
-    return num % 10 === 1 && num % 100 !== 11
-        ? forms[0]
-        : num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20)
-          ? forms[1]
-          : forms[2];
-}
+/**
+ * Handles relative time formatting.
+ * In Chechen, nouns do not change their form after numbers in this context.
+ * Example: 1 minute = 1 минот, 5 minutes = 5 минот.
+ */
 function relativeTimeWithPlural(number, withoutSuffix, key) {
     var format = {
-        ss: withoutSuffix ? 'секунд' : 'секунд',
-        mm: withoutSuffix ? 'минот' : 'минот',
+        ss: 'секунд',
+        mm: 'минот',
         hh: 'сахьт',
         dd: 'де',
         ww: 'кӀира',
         MM: 'бутт',
         yy: 'шо',
     };
+
     if (key === 'm') {
-        return withoutSuffix ? 'минот' : 'минот';
-    } else {
-        return number + ' ' + plural(format[key], +number);
+        return 'минот';
     }
+
+    // Returns number and the noun (e.g., "5 де")
+    return number + ' ' + format[key];
 }
+
 var monthsParse = [
     /^янв/i,
     /^фев/i,
@@ -49,33 +49,19 @@ var monthsParse = [
 // better consistency across calendar interfaces and digital displays.
 export default moment.defineLocale('ce', {
     months: {
-        format: 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split(
-            '_'
-        ),
-        standalone:
-            'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split(
-                '_'
-            ),
+        format: 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split('_'),
+        standalone: 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split('_'),
     },
     monthsShort: {
-        // CLDR-ца иза "июл." а, "июнь" а ду, амма хӀун маьӀна ду элп тӀадам тӀе хийцарх?
-        format: 'янв._февр._мар._апр._май_июнь_июль_авг._сент._окт._нояб._дек.'.split(
-            '_'
-        ),
-        standalone:
-            'янв._февр._март_апр._май_июнь_июль_авг._сент._окт._нояб._дек.'.split(
-                '_'
-            ),
+        // According to CLDR, it should be "июль" and "июнь". 
+        // We avoid unnecessary dots where the abbreviation is the same length as the full name.
+        format: 'янв._февр._мар._апр._май_июнь_июль_авг._сент._окт._нояб._дек.'.split('_'),
+        standalone: 'янв._февр._март_апр._май_июнь_июль_авг._сент._окт._нояб._дек.'.split('_'),
     },
     weekdays: {
-        standalone:
-            'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split(
-                '_'
-            ),
-        format: 'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split(
-            '_'
-        ),
-        isFormat: /\[ ?[] ?(?:дӀайаханчу|рогӀерчу|хӀинца)? ?] ?dddd/,
+        standalone: 'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split('_'),
+        format: 'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split('_'),
+        isFormat: /\[ ?[] ?(?:хьалхара|рогӀера|хӀинца)? ?] ?dddd/,
     },
     weekdaysShort: 'кӀир_орш_шин_кхар_йеа_пӀер_шот'.split('_'),
     weekdaysMin: 'кӀир_орш_шин_кхар_йеа_пӀер_шот'.split('_'),
@@ -83,24 +69,19 @@ export default moment.defineLocale('ce', {
     longMonthsParse: monthsParse,
     shortMonthsParse: monthsParse,
 
-// monthsRegex: matches full names in multiple cases (Nominative, Genitive, Locative),
+    // monthsRegex: matches full names in multiple cases (Nominative, Genitive, Locative),
     // and abbreviations (3-4 letters) with or without dots.
-    // This ensures the parser correctly identifies months regardless of the case ending used.
-    monthsRegex:
-        /^(январь|январан|январехь|янв\.?|февраль|февралан|февралехь|февр?\.?|март|мартан|мартехь|мар\.?|апрель|апрелан|апрелехь|апр\.?|май|майан|майхь|июнь|июнан|июнехь|июн\.?|июль|июлан|июлехь|июл\.?|август|августан|августехь|авг\.?|сентябрь|сентябран|сентябрехь|сент?\.?|октябрь|октябран|октябрехь|окт\.?|ноябрь|ноябран|ноябрехь|нояб?\.?|декабрь|декабран|декабрехь|дек\.?)/i,
+    monthsRegex: /^(январь|январан|январехь|янв\.?|февраль|февралан|февралехь|февр?\.?|март|мартан|мартехь|мар\.?|апрель|апрелан|апрелехь|апр\.?|май|майан|майхь|июнь|июнан|июнехь|июн\.?|июль|июлан|июлехь|июл\.?|август|августан|августехь|авг\.?|сентябрь|сентябран|сентябрехь|сент?\.?|октябрь|октябран|октябрехь|окт\.?|ноябрь|ноябран|ноябрехь|нояб?\.?|декабрь|декабран|декабрехь|дек\.?)/i,
 
-// monthsShortRegex: copy of the above to ensure consistent month identification
-    monthsShortRegex:
-        /^(январь|январан|январехь|янв\.?|февраль|февралан|февралехь|февр?\.?|март|мартан|мартехь|мар\.?|апрель|апрелан|апрелехь|апр\.?|май|майан|майхь|июнь|июнан|июнехь|июн\.?|июль|июлан|июлехь|июл\.?|август|августан|августехь|авг\.?|сентябрь|сентябран|сентябрехь|сент?\.?|октябрь|октябран|октябрехь|окт\.?|ноябрь|ноябран|ноябрехь|нояб?\.?|декабрь|декабран|декабрехь|дек\.?)/i,
+    // monthsShortRegex: copy of the above to ensure consistent month identification
+    monthsShortRegex: /^(январь|январан|январехь|янв\.?|февраль|февралан|февралехь|февр?\.?|март|мартан|мартехь|мар\.?|апрель|апрелан|апрелехь|апр\.?|май|майан|майхь|июнь|июнан|июнехь|июн\.?|июль|июлан|июлехь|июл\.?|август|августан|августехь|авг\.?|сентябрь|сентябран|сентябрехь|сент?\.?|октябрь|октябран|октябрехь|окт\.?|ноябрь|ноябран|ноябрехь|нояб?\.?|декабрь|декабран|декабрехь|дек\.?)/i,
 
     // monthsStrictRegex: matches only full names in various cases
-    monthsStrictRegex:
-        /^(январь|январан|январехь|февраль|февралан|февралехь|март|мартан|мартехь|апрель|апрелан|апрелехь|май|майан|майхь|июнь|июнан|июнехь|июль|июлан|июлехь|август|августан|августехь|сентябрь|сентябран|сентябрехь|октябрь|октябран|октябрехь|ноябрь|ноябран|ноябрехь|декабрь|декабран|декабрехь)/i,
+    monthsStrictRegex: /^(январь|январан|январехь|февраль|февралан|февралехь|март|мартан|мартехь|апрель|апрелан|апрелехь|май|майан|майхь|июнь|июнан|июнехь|июль|июлан|июлехь|август|августан|августехь|сентябрь|сентябран|сентябрехь|октябрь|октябран|октябрехь|ноябрь|ноябран|ноябрехь|декабрь|декабран|декабрехь)/i,
 
-// monthsShortStrictRegex: matches only abbreviated forms (with or without dots).
-    // This is used when the parser expects a short month format specifically.
-    monthsShortStrictRegex:
-        /^(янв\.?|февр?\.?|март?\.?|апр\.?|май\.?|июн\.?|июл\.?|авг\.?|сент?\.?|окт\.?|нояб?\.?|дек\.?)/i,
+    // monthsShortStrictRegex: matches only abbreviated forms (with or without dots).
+    monthsShortStrictRegex: /^(янв\.?|февр?\.?|март?\.?|апр\.?|май\.?|июн\.?|июл\.?|авг\.?|сент?\.?|окт\.?|нояб?\.?|дек\.?)/i,
+
     longDateFormat: {
         LT: 'H:mm',
         LTS: 'H:mm:ss',
@@ -117,44 +98,32 @@ export default moment.defineLocale('ce', {
             if (now.week() !== this.week()) {
                 switch (this.day()) {
                     case 0:
-                        return '[PoгӀepa] dddd, LT';
                     case 1:
                     case 2:
-                    case 4:
-                        return '[PoгӀepa] dddd, LT';
                     case 3:
+                    case 4:
                     case 5:
                     case 6:
-                        return '[PoгӀepa] dddd, LT';
+                        return '[РогӀера] dddd, LT';
                 }
             } else {
-                if (this.day() === 2) {
-                    return '[] dddd, [] LT';
-                } else {
-                    return '[] dddd, [] LT';
-                }
+                return 'dddd, LT';
             }
         },
         lastWeek: function (now) {
             if (now.week() !== this.week()) {
                 switch (this.day()) {
                     case 0:
-                        return '[Хьалхара] dddd, LT';
                     case 1:
                     case 2:
-                    case 4:
-                        return '[Хьалхара] dddd, LT';
                     case 3:
+                    case 4:
                     case 5:
                     case 6:
                         return '[Хьалхара] dddd, LT';
                 }
             } else {
-                if (this.day() === 2) {
-                    return '[] dddd, [] LT';
-                } else {
-                    return '[] dddd, [] LT';
-                }
+                return 'dddd, LT';
             }
         },
         sameElse: 'L',
@@ -192,21 +161,9 @@ export default moment.defineLocale('ce', {
             return 'суьйре';
         }
     },
-    dayOfMonthOrdinalParse: /\d{1,2}-(||)/,
-    ordinal: function (number, period) {
-        switch (period) {
-            case 'M':
-            case 'd':
-            case 'DDD':
-                return number + '';
-            case 'D':
-                return number + '';
-            case 'w':
-            case 'W':
-                return number + '';
-            default:
-                return number;
-        }
+    dayOfMonthOrdinalParse: /\d{1,2}/,
+    ordinal: function (number) {
+        return number;
     },
     week: {
         dow: 1, // Monday is the first day of the week.
