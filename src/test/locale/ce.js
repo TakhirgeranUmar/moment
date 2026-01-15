@@ -4,9 +4,12 @@ import moment from '../../moment';
 module('locale:ce');
 
 test('format', function (assert) {
+    // Set locale to Chechen
     moment.locale('ce');
     
-    // Wed Jan 14 2026 15:25 -> 2026 ш. 14 январь, кхаара
+    // Testing date: 2026-01-14 (Year-Month-Day) at 15:25
+    // Note: Chechen date format uses Year.Day.Month (YYYY.DD.MM)
+    // Result in Chechen: 2026 ш. 14 январь, кхаара (Wednesday)
     var b = moment([2026, 0, 14, 15, 25]); 
     var a = [
         ['dddd, YYYY [ш.] D MMMM, HH:mm', 'кхаара, 2026 ш. 14 январь, 15:25'],
@@ -36,7 +39,7 @@ test('calendar', function (assert) {
 
 test('relative time future', function (assert) {
     moment.locale('ce');
-    // Future suffixes: йаьлча (J), даьлча (D), баьлча (B)
+    // Future suffixes based on noun class: йаьлча (J), даьлча (D), баьлча (B)
     assert.equal(moment().add({ s: 10 }).fromNow(), 'масех секунд йаьлча', 'a few seconds (J-class: йаьлча)');
     assert.equal(moment().add({ m: 1 }).fromNow(), 'минот йаьлча', 'in a minute (J-class: йаьлча)');
     assert.equal(moment().add({ m: 5 }).fromNow(), '5 минот йаьлча', 'in 5 minutes (J-class: йаьлча)');
@@ -48,7 +51,7 @@ test('relative time future', function (assert) {
 
 test('relative time past', function (assert) {
     moment.locale('ce');
-    // Past tense: just the noun + 'хьалха'
+    // Past tense uses the base noun + 'хьалха' (ago)
     assert.equal(moment().subtract({ s: 10 }).fromNow(), 'масех секунд хьалха', 'a few seconds ago (хьалха)');
     assert.equal(moment().subtract({ m: 1 }).fromNow(), 'минот хьалха', 'a minute ago (хьалха)');
     assert.equal(moment().subtract({ m: 5 }).fromNow(), '5 минот хьалха', '5 minutes ago (хьалха)');
@@ -58,7 +61,7 @@ test('relative time past', function (assert) {
 
 test('meridiem', function (assert) {
     moment.locale('ce');
-    // Day periods: буьйса, Ӏуьйре, де, суьйре
+    // Chechen day periods: night (буьйса), morning (Ӏуьйре), afternoon (де), evening (суьйре)
     assert.equal(moment([2026, 0, 14, 2]).format('A'), 'буьйса', 'night (буьйса)');
     assert.equal(moment([2026, 0, 14, 8]).format('A'), 'Ӏуьйре', 'morning (Ӏуьйре)');
     assert.equal(moment([2026, 0, 14, 15]).format('A'), 'де', 'afternoon (де)');
