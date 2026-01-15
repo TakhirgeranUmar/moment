@@ -139,15 +139,15 @@ export default moment.defineLocale('ce', {
             if (now.week() !== this.week()) {
                 switch (this.day()) {
                     case 0:
-                        return '[ДӀайахана] dddd, LT';
+                        return '[Хьалхара] dddd, LT';
                     case 1:
                     case 2:
                     case 4:
-                        return '[ДӀайахана] dddd, LT';
+                        return '[Хьалхара] dddd, LT';
                     case 3:
                     case 5:
                     case 6:
-                        return '[ДӀайахана] dddd, LT';
+                        return '[Хьалхара] dddd, LT';
                 }
             } else {
                 if (this.day() === 2) {
@@ -160,7 +160,7 @@ export default moment.defineLocale('ce', {
         sameElse: 'L',
     },
     relativeTime: {
-        future: '%s йисина хан',
+        future: '%s тӀаьхьа',
         past: '%s хьалха',
         s: 'масех секунд',
         ss: relativeTimeWithPlural,
