@@ -72,7 +72,7 @@ export default moment.defineLocale('ce', {
             'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split(
                 '_'
             ),
-        format: 'кӀирандийнахь_оршотдийнахь_шинариндийнахь_кхаариндийнахь_йеарадийнахь_пӀераскандийнахь_шотдийнахь'.split(
+        format: 'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split(
             '_'
         ),
         isFormat: /\[ ?[] ?(?:дӀайаханчу|рогӀерчу|хӀинца)? ?] ?dddd/,
@@ -139,15 +139,15 @@ export default moment.defineLocale('ce', {
             if (now.week() !== this.week()) {
                 switch (this.day()) {
                     case 0:
-                        return '[ДӀайаханчу] dddd, LT';
+                        return '[ДӀайахана] dddd, LT';
                     case 1:
                     case 2:
                     case 4:
-                        return '[ДӀайаханчу] dddd, LT';
+                        return '[ДӀайахана] dddd, LT';
                     case 3:
                     case 5:
                     case 6:
-                        return '[ДӀайаханчу] dddd, LT';
+                        return '[ДӀайахана] dddd, LT';
                 }
             } else {
                 if (this.day() === 2) {
@@ -177,19 +177,19 @@ export default moment.defineLocale('ce', {
         y: 'шо',
         yy: relativeTimeWithPlural,
     },
-    meridiemParse: /буьйсана|Ӏуьйранна|дийнахь|суьйранна/i,
+    meridiemParse: /буьйса|Ӏуьйре|де|суьйре/i,
     isPM: function (input) {
-        return /^(дийнахь|суьйранна)$/.test(input);
+        return /^(де|суьйре)$/.test(input);
     },
     meridiem: function (hour, minute, isLower) {
         if (hour < 4) {
-            return 'буьйсана';
+            return 'буьйса';
         } else if (hour < 12) {
-            return 'Ӏуьйранна';
+            return 'Ӏуьйре';
         } else if (hour < 17) {
-            return 'дийнахь';
+            return 'де';
         } else {
-            return 'суьйранна';
+            return 'суьйре';
         }
     },
     dayOfMonthOrdinalParse: /\d{1,2}-(||)/,
