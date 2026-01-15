@@ -5,38 +5,39 @@ import moment from '../moment';
 
 /**
  * Handles relative time formatting using Chechen grammatical gender classes (J, D, B).
- * In Chechen, the future suffix (equivalent to "in X minutes") varies based on the noun:
- * - 'йаьлча' is used for class J nouns (seconds, minutes).
- * - 'даьлча' is used for class D nouns (hours, days, weeks, years).
- * - 'баьлча' is used for class B nouns (months).
- * For the past tense ("X ago"), the universal suffix 'хьалха' is used for all classes.
+ * For the future ("in X minutes"), it adds class-specific suffixes: йаьлча, даьлча, баьлча.
+ * For the past ("X ago"), it returns the base noun, and moment adds 'хьалха'.
  */
 function relativeTimeWithPlural(number, withoutSuffix, key, isFuture) {
     var format = {
+        s: 'масех секунд',
         ss: 'секунд',
+        m: 'минот',
         mm: 'минот',
+        h: 'сахьт',
         hh: 'сахьт',
+        d: 'де',
         dd: 'де',
+        w: 'кӀира',
         ww: 'кӀира',
+        M: 'бутт',
         MM: 'бутт',
+        y: 'шо',
         yy: 'шо',
     };
 
-    // Special case for a single minute in the future
-    if (key === 'm') {
-        return isFuture ? 'минот йаьлча' : 'минот';
-    }
+    // Use only the noun for single units (s, m, h, d, w, M, y)
+    var isSingle = /^(s|m|h|d|w|M|y)$/.test(key);
+    var result = isSingle ? format[key] : number + ' ' + format[key];
 
-    var result = number + ' ' + format[key];
-
-    // Apply the correct grammatical class suffix for future time
+    // Suffixes are only applied for FUTURE time (e.g., "in 5 minutes")
     if (isFuture) {
-        if (key === 'MM') {
-            result += ' баьлча'; // Class B (months)
-        } else if (key === 'hh' || key === 'dd' || key === 'ww' || key === 'yy') {
-            result += ' даьлча'; // Class D (hours, days, weeks, years)
+        if (key === 'M' || key === 'MM') {
+            return result + ' баьлча'; // Class B (months)
+        } else if (/^(h|hh|d|dd|w|ww|y|yy)$/.test(key)) {
+            return result + ' даьлча'; // Class D (hours, days, weeks, years)
         } else {
-            result += ' йаьлча'; // Class J (seconds, minutes)
+            return result + ' йаьлча'; // Class J (seconds, minutes)
         }
     }
 
@@ -44,59 +45,24 @@ function relativeTimeWithPlural(number, withoutSuffix, key, isFuture) {
 }
 
 var monthsParse = [
-    /^янв/i,
-    /^фев/i,
-    /^мар/i,
-    /^апр/i,
-    /^ма[й]/i,
-    /^июн/i,
-    /^июл/i,
-    /^авг/i,
-    /^сен/i,
-    /^окт/i,
-    /^ноя/i,
-    /^дек/i,
+    /^янв/i, /^фев/i, /^мар/i, /^апр/i, /^ма[й]/i, /^июн/i,
+    /^июл/i, /^авг/i, /^сен/i, /^окт/i, /^ноя/i, /^дек/i,
 ];
 
-// months:
-// Both 'format' and 'standalone' use the Nominative case (халхарниг дожар).
-// While Chechen grammar often uses the Locative case (январехь) for dates, 
-// the Nominative (январь) is chosen here as the primary display format for 
-// better consistency across calendar interfaces and digital displays.
 export default moment.defineLocale('ce', {
-    months: {
-        format: 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split('_'),
-        standalone: 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split('_'),
-    },
-    monthsShort: {
-        // According to CLDR, it should be "июль" and "июнь". 
-        // We avoid unnecessary dots where the abbreviation is the same length as the full name.
-        format: 'янв._февр._мар._апр._май_июнь_июль_авг._сент._окт._нояб._дек.'.split('_'),
-        standalone: 'янв._февр._март_апр._май_июнь_июль_авг._сент._окт._нояб._дек.'.split('_'),
-    },
-    weekdays: {
-        standalone: 'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split('_'),
-        format: 'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split('_'),
-        isFormat: /\[ ?[] ?(?:хьалхара|рогӀера|хӀинца)? ?] ?dddd/,
-    },
+    months: 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split('_'),
+    monthsShort: 'янв._февр._мар._апр._май_июнь_июль_авг._сент._окт._нояб._дек.'.split('_'),
+    weekdays: 'кӀиранде_оршот_шинара_кхаара_йеара_пӀераска_шот'.split('_'),
     weekdaysShort: 'кӀир_орш_шин_кхар_йеа_пӀер_шот'.split('_'),
     weekdaysMin: 'кӀир_орш_шин_кхар_йеа_пӀер_шот'.split('_'),
     monthsParse: monthsParse,
     longMonthsParse: monthsParse,
     shortMonthsParse: monthsParse,
 
-    // monthsRegex: matches full names in multiple cases (Nominative, Genitive, Locative),
-    // and abbreviations (3-4 letters) with or without dots.
     monthsRegex: /^(январь|январан|январехь|янв\.?|февраль|февралан|февралехь|февр?\.?|март|мартан|мартехь|мар\.?|апрель|апрелан|апрелехь|апр\.?|май|майан|майхь|июнь|июнан|июнехь|июн\.?|июль|июлан|июлехь|июл\.?|август|августан|августехь|авг\.?|сентябрь|сентябран|сентябрехь|сент?\.?|октябрь|октябран|октябрехь|окт\.?|ноябрь|ноябран|ноябрехь|нояб?\.?|декабрь|декабран|декабрехь|дек\.?)/i,
-
-    // monthsShortRegex: copy of the above to ensure consistent month identification
     monthsShortRegex: /^(январь|январан|январехь|янв\.?|февраль|февралан|февралехь|февр?\.?|март|мартан|мартехь|мар\.?|апрель|апрелан|апрелехь|апр\.?|май|майан|майхь|июнь|июнан|июнехь|июн\.?|июль|июлан|июлехь|июл\.?|август|августан|августехь|авг\.?|сентябрь|сентябран|сентябрехь|сент?\.?|октябрь|октябран|октябрехь|окт\.?|ноябрь|ноябран|ноябрехь|нояб?\.?|декабрь|декабран|декабрехь|дек\.?)/i,
-
-    // monthsStrictRegex: matches only full names in various cases
     monthsStrictRegex: /^(январь|январан|январехь|февраль|февралан|февралехь|март|мартан|мартехь|апрель|апрелан|апрелехь|май|майан|майхь|июнь|июнан|июнехь|июль|июлан|июлехь|август|августан|августехь|сентябрь|сентябран|сентябрехь|октябрь|октябран|октябрехь|ноябрь|ноябран|ноябрехь|декабрь|декабран|декабрехь)/i,
-
-    // monthsShortStrictRegex: matches only abbreviated forms (with or without dots).
-    monthsShortStrictStrictRegex: /^(янв\.?|февр?\.?|март?\.?|апр\.?|май\.?|июн\.?|июл\.?|авг\.?|сент?\.?|окт\.?|нояб?\.?|дек\.?)/i,
+    monthsShortStrictRegex: /^(янв\.?|февр?\.?|март?\.?|апр\.?|май\.?|июн\.?|июл\.?|авг\.?|сент?\.?|окт\.?|нояб?\.?|дек\.?)/i,
 
     longDateFormat: {
         LT: 'H:mm',
@@ -111,38 +77,29 @@ export default moment.defineLocale('ce', {
         nextDay: '[Кхана] LT',
         lastDay: '[Селхана] LT',
         nextWeek: function (now) {
-            if (now.week() !== this.week()) {
-                return '[РогӀера] dddd, LT';
-            } else {
-                return 'dddd, LT';
-            }
+            return (now.week() !== this.week()) ? '[РогӀера] dddd, LT' : 'dddd, LT';
         },
         lastWeek: function (now) {
-            if (now.week() !== this.week()) {
-                return '[Хьалхара] dddd, LT';
-            } else {
-                return 'dddd, LT';
-            }
+            return (now.week() !== this.week()) ? '[Хьалхара] dddd, LT' : 'dddd, LT';
         },
         sameElse: 'L',
     },
     relativeTime: {
-        // Future suffix is handled dynamically inside the relativeTimeWithPlural function
         future: '%s', 
         past: '%s хьалха',
-        s: 'масех секунд йаьлча',
+        s: relativeTimeWithPlural,
         ss: relativeTimeWithPlural,
-        m: 'минот йаьлча',
+        m: relativeTimeWithPlural,
         mm: relativeTimeWithPlural,
-        h: 'сахьт даьлча',
+        h: relativeTimeWithPlural,
         hh: relativeTimeWithPlural,
-        d: 'де даьлча',
+        d: relativeTimeWithPlural,
         dd: relativeTimeWithPlural,
-        w: 'кӀира даьлча',
+        w: relativeTimeWithPlural,
         ww: relativeTimeWithPlural,
-        M: 'бутт баьлча',
+        M: relativeTimeWithPlural,
         MM: relativeTimeWithPlural,
-        y: 'шо даьлча',
+        y: relativeTimeWithPlural,
         yy: relativeTimeWithPlural,
     },
     meridiemParse: /буьйса|Ӏуьйре|де|суьйре/i,
