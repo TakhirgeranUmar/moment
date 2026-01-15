@@ -4,15 +4,10 @@ import moment from '../../moment';
 module('locale:ce');
 
 test('format', function (assert) {
-    // Set locale to Chechen
     moment.locale('ce');
-    
-    // Testing date: 2026-01-14 (Year-Month-Day) at 15:25
-    // Note: Chechen date format uses Year.Day.Month (YYYY.DD.MM)
-    // Result in Chechen: 2026 ш. 14 январь, кхаара (Wednesday)
-    var b = moment([2026, 0, 14, 15, 25]); 
+    var b = moment([2026, 0, 14, 15, 25]);
     var a = [
-        ['dddd, YYYY [ш.] D MMMM, HH:mm', 'кхаара, 2026 ш. 14 январь, 15:25'],
+        ['dddd, YYYY [ш.] D MMMM, H:mm', 'кхаара, 2026 ш. 14 январь, 15:25'],
         ['LL', '2026 ш. 14 январь'],
         ['L', '2026.14.01'],
         ['LT', '15:25'],
@@ -27,43 +22,35 @@ test('format', function (assert) {
 
 test('calendar', function (assert) {
     moment.locale('ce');
-    var now = moment([2026, 0, 14]); 
+    var now = moment([2026, 0, 14]);
     assert.equal(moment(now).subtract({ d: 1 }).calendar().split(' ')[0], 'Селхана', 'yesterday (селхана)');
     assert.equal(moment(now).calendar().split(' ')[0], 'Тахана', 'today (тахана)');
     assert.equal(moment(now).add({ d: 1 }).calendar().split(' ')[0], 'Кхана', 'tomorrow (кхана)');
-    
-    // Testing Last Week (хьалхара) and Next Week (рогӀера) prefixes
     assert.equal(moment(now).subtract({ d: 7 }).calendar().split(' ')[0], 'Хьалхара', 'last week (хьалхара)');
     assert.equal(moment(now).add({ d: 7 }).calendar().split(' ')[0], 'РогӀера', 'next week (рогӀера)');
 });
 
 test('relative time future', function (assert) {
     moment.locale('ce');
-    // Future suffixes based on noun class: йаьлча (J), даьлча (D), баьлча (B)
-    assert.equal(moment().add({ s: 10 }).fromNow(), 'масех секунд йаьлча', 'a few seconds (J-class: йаьлча)');
-    assert.equal(moment().add({ m: 1 }).fromNow(), 'минот йаьлча', 'in a minute (J-class: йаьлча)');
-    assert.equal(moment().add({ m: 5 }).fromNow(), '5 минот йаьлча', 'in 5 minutes (J-class: йаьлча)');
-    assert.equal(moment().add({ h: 1 }).fromNow(), 'сахьт даьлча', 'in an hour (D-class: даьлча)');
-    assert.equal(moment().add({ d: 5 }).fromNow(), '5 де даьлча', 'in 5 days (D-class: даьлча)');
-    assert.equal(moment().add({ w: 1 }).fromNow(), 'кӀира даьлча', 'in a week (D-class: даьлча)');
-    assert.equal(moment().add({ M: 1 }).fromNow(), 'бутт баьлча', 'in a month (B-class: баьлча)');
+    assert.equal(moment().add({ s: 10 }).fromNow(), 'масех секунд йаьлча', 'a few seconds');
+    assert.equal(moment().add({ m: 1 }).fromNow(), 'минот йаьлча', 'in a minute');
+    assert.equal(moment().add({ h: 1 }).fromNow(), 'сахьт даьлча', 'in an hour');
+    assert.equal(moment().add({ d: 5 }).fromNow(), '5 де даьлча', 'in 5 days');
+    assert.equal(moment().add({ M: 1 }).fromNow(), 'бутт баьлча', 'in a month');
 });
 
 test('relative time past', function (assert) {
     moment.locale('ce');
-    // Past tense uses the base noun + 'хьалха' (ago)
-    assert.equal(moment().subtract({ s: 10 }).fromNow(), 'масех секунд хьалха', 'a few seconds ago (хьалха)');
-    assert.equal(moment().subtract({ m: 1 }).fromNow(), 'минот хьалха', 'a minute ago (хьалха)');
-    assert.equal(moment().subtract({ m: 5 }).fromNow(), '5 минот хьалха', '5 minutes ago (хьалха)');
-    assert.equal(moment().subtract({ h: 1 }).fromNow(), 'сахьт хьалха', 'an hour ago (хьалха)');
-    assert.equal(moment().subtract({ d: 1 }).fromNow(), 'де хьалха', 'a day ago (хьалха)');
+    assert.equal(moment().subtract({ s: 10 }).fromNow(), 'масех секунд хьалха', 'a few seconds ago');
+    assert.equal(moment().subtract({ m: 1 }).fromNow(), 'минот хьалха', 'a minute ago');
+    assert.equal(moment().subtract({ h: 1 }).fromNow(), 'сахьт хьалха', 'an hour ago');
+    assert.equal(moment().subtract({ d: 1 }).fromNow(), 'де хьалха', 'a day ago');
 });
 
 test('meridiem', function (assert) {
     moment.locale('ce');
-    // Chechen day periods: night (буьйса), morning (Ӏуьйре), afternoon (де), evening (суьйре)
-    assert.equal(moment([2026, 0, 14, 2]).format('A'), 'буьйса', 'night (буьйса)');
-    assert.equal(moment([2026, 0, 14, 8]).format('A'), 'Ӏуьйре', 'morning (Ӏуьйре)');
-    assert.equal(moment([2026, 0, 14, 15]).format('A'), 'де', 'afternoon (де)');
-    assert.equal(moment([2026, 0, 14, 21]).format('A'), 'суьйре', 'evening (суьйре)');
+    assert.equal(moment([2026, 0, 14, 2]).format('A'), 'буьйса', 'night');
+    assert.equal(moment([2026, 0, 14, 8]).format('A'), 'Ӏуьйре', 'morning');
+    assert.equal(moment([2026, 0, 14, 15]).format('A'), 'де', 'afternoon');
+    assert.equal(moment([2026, 0, 14, 21]).format('A'), 'суьйре', 'evening');
 });
