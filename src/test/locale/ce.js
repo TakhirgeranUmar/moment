@@ -25,19 +25,32 @@ test('calendar', function (assert) {
     assert.equal(moment(now).calendar().split(' ')[0], 'Тахана', 'today');
     assert.equal(moment(now).add({ d: 1 }).calendar().split(' ')[0], 'Кхана', 'tomorrow');
     
-    // Проверка Хьалхара / РогӀера
+    // Testing Last Week / Next Week prefixes
     assert.equal(moment(now).subtract({ d: 7 }).calendar().split(' ')[0], 'Хьалхара', 'last week');
     assert.equal(moment(now).add({ d: 7 }).calendar().split(' ')[0], 'РогӀера', 'next week');
 });
 
-test('relative time', function (assert) {
-    assert.equal(moment.duration({ m: 1 }).humanize(), 'минот', 'a minute');
-    assert.equal(moment.duration({ m: 5 }).humanize(), '5 минот', '5 minutes');
-    assert.equal(moment.duration({ d: 1 }).humanize(), 'де', 'a day');
-    assert.equal(moment.duration({ d: 5 }).humanize(), '5 де', '5 days');
+test('relative time future', function (assert) {
+    // Testing J-class (йаьлча)
+    assert.equal(moment().add({ s: 10 }).fromNow(), 'масех секунд йаьлча', 'a few seconds (J-class)');
+    assert.equal(moment().add({ s: 45 }).fromNow(), 'минот йаьлча', 'in a minute (J-class)');
+    assert.equal(moment().add({ m: 5 }).fromNow(), '5 минот йаьлча', 'in 5 minutes (J-class)');
     
-    assert.equal(moment([2026, 0, 14]).from(moment([2026, 0, 14, 0, 5])), '5 минот хьалха', '5 minutes ago');
-    assert.equal(moment([2026, 0, 14, 0, 5]).from(moment([2026, 0, 14])), '5 минот тӀаьхьа', 'in 5 minutes');
+    // Testing D-class (даьлча)
+    assert.equal(moment().add({ h: 1 }).fromNow(), 'сахьт даьлча', 'in an hour (D-class)');
+    assert.equal(moment().add({ d: 5 }).fromNow(), '5 де даьлча', 'in 5 days (D-class)');
+    assert.equal(moment().add({ w: 1 }).fromNow(), 'кӀира даьлча', 'in a week (D-class)');
+    
+    // Testing B-class (баьлча)
+    assert.equal(moment().add({ M: 1 }).fromNow(), 'бутт баьлча', 'in a month (B-class)');
+});
+
+test('relative time past', function (assert) {
+    assert.equal(moment().subtract({ s: 10 }).fromNow(), 'масех секунд хьалха', 'a few seconds ago');
+    assert.equal(moment().subtract({ m: 1 }).fromNow(), 'минот хьалха', 'a minute ago');
+    assert.equal(moment().subtract({ m: 5 }).fromNow(), '5 минот хьалха', '5 minutes ago');
+    assert.equal(moment().subtract({ h: 1 }).fromNow(), 'сахьт хьалха', 'an hour ago');
+    assert.equal(moment().subtract({ d: 1 }).fromNow(), 'де хьалха', 'a day ago');
 });
 
 test('meridiem', function (assert) {
