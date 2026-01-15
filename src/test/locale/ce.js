@@ -4,7 +4,7 @@ import moment from '../../moment';
 module('locale:ce');
 
 test('format', function (assert) {
-    var b = moment([2026, 0, 14, 15, 25]); // 14 января 2026, среда
+    var b = moment([2026, 0, 14, 15, 25]); // 2026 14 январь, кхаара
     var a = [
         ['dddd, YYYY [ш.] D MMMM, HH:mm', 'кхаара, 2026 ш. 14 январь, 15:25'],
         ['LL', '2026 ш. 14 январь'],
