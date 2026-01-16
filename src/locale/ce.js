@@ -38,8 +38,8 @@ function relativeTimeWithPlural(number, withoutSuffix, key, isFuture) {
 }
 
 var monthsParse = [
-    /^янв/i, /^фев/i, /^мар/i, /^апр/i, /^ма[й]/i, /^июн/i,
-    /^июл/i, /^авг/i, /^сен/i, /^окт/i, /^ной/i, /^дек/i,
+    /^янв/i, /^фев/i, /^мар/i, /^апр/i, /^май/i, /^июн/i,
+    /^июл/i, /^авг/i, /^сен/i, /^окт/i, /^нояб/i, /^дек/i,
 ];
 
 export default moment.defineLocale('ce', {
